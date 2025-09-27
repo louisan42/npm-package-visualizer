@@ -19,7 +19,6 @@ app.use(express.json());
 
 // NPM Registry API base URL
 const NPM_REGISTRY = 'https://registry.npmjs.org';
-const NPM_AUDIT_API = 'https://registry.npmjs.org/-/npm/v1/security/audits';
 
 // Utility function to fetch package data from npm registry
 async function fetchPackageData(packageName, version = 'latest') {

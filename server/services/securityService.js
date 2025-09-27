@@ -145,7 +145,6 @@ class SecurityService {
 
       // Remove duplicates based on title or ID
       const uniqueVulns = allVulnerabilities.reduce((acc, vuln) => {
-        const key = vuln.id || vuln.title;
         if (!acc.some(existing => existing.id === vuln.id || existing.title === vuln.title)) {
           acc.push(vuln);
         }
@@ -217,21 +216,21 @@ class SecurityService {
 
     vulnerabilities.forEach(vuln => {
       switch (vuln.severity) {
-        case 'critical':
-          score -= 25;
-          break;
-        case 'high':
-          score -= 15;
-          break;
-        case 'moderate':
-        case 'medium':
-          score -= 8;
-          break;
-        case 'low':
-          score -= 3;
-          break;
-        default:
-          score -= 1;
+      case 'critical':
+        score -= 25;
+        break;
+      case 'high':
+        score -= 15;
+        break;
+      case 'moderate':
+      case 'medium':
+        score -= 8;
+        break;
+      case 'low':
+        score -= 3;
+        break;
+      default:
+        score -= 1;
       }
     });
 

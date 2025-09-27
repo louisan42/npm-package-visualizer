@@ -328,7 +328,7 @@ describe('NPM Package Visualizer API', () => {
 
   describe('Error handling', () => {
     test('should handle 404 for unknown routes', async () => {
-      const response = await request(app)
+      await request(app)
         .get('/api/unknown-endpoint')
         .expect(404);
     });
