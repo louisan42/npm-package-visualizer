@@ -46,7 +46,7 @@
     ],
     "coverageDirectory": "coverage",
     "coverageReporters": ["text", "lcov", "html"],
-    "testMatch": ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"],
+    "testMatch": ["<rootDir>/server/**/__tests__/**/*.js", "<rootDir>/server/**/?(*.)+(spec|test).js"],
     "coverageThreshold": {
       "global": {
         "branches": 65,
