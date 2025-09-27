@@ -152,7 +152,7 @@ function SearchBar({ onPackageSelect }) {
     onPackageSelect(packageName, version);
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && query.trim()) {
       setShowResults(false);
       onPackageSelect(query.trim());
@@ -168,7 +168,7 @@ function SearchBar({ onPackageSelect }) {
           placeholder="Search npm packages (e.g., react, lodash, express)..."
           value={query}
           onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           onFocus={() => results.length > 0 && setShowResults(true)}
         />
       </SearchInputContainer>

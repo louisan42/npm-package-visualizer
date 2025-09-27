@@ -5,11 +5,14 @@ import DependencyTree from './components/DependencyTree';
 import PackageInfo from './components/PackageInfo';
 import LoadingSpinner from './components/LoadingSpinner';
 import ErrorMessage from './components/ErrorMessage';
+import { Container, Panel, Title, Subtitle, Grid } from './components/shared/StyledComponents';
+import { colors, breakpoints } from './theme/constants';
+import { getEmptyStateText } from './utils/helpers';
 import './App.css';
 
 const AppContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, ${colors.gradientStart} 0%, ${colors.gradientEnd} 100%);
   padding: 20px;
 `;
 
@@ -18,45 +21,18 @@ const Header = styled.header`
   margin-bottom: 30px;
 `;
 
-const Title = styled.h1`
-  color: white;
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-`;
-
-const Subtitle = styled.p`
-  color: rgba(255,255,255,0.8);
-  font-size: 1.1rem;
-  margin: 0;
-`;
-
-const MainContent = styled.div`
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 20px;
+const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: ${colors.muted};
+  text-align: center;
+  padding: 40px 20px;
   
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  @media (max-width: ${breakpoints.mobile}) {
+    padding: 20px 10px;
   }
-`;
-
-const LeftPanel = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  height: fit-content;
-`;
-
-const RightPanel = styled.div`
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  min-height: 600px;
 `;
 
 function App() {
@@ -95,6 +71,9 @@ function App() {
     }
   };
 
+  const searchEmptyState = getEmptyStateText('search');
+  const dependenciesEmptyState = getEmptyStateText('dependencies');
+
   return (
     <AppContainer>
       <Header>
@@ -108,45 +87,42 @@ function App() {
 
       {error && <ErrorMessage message={error} />}
 
-      <MainContent>
-        <LeftPanel>
-          {loading ? (
-            <LoadingSpinner />
-          ) : selectedPackage ? (
-            <PackageInfo package={selectedPackage} dependencyTree={dependencyTree} />
-          ) : (
-            <div style={{ textAlign: 'center', color: '#666', padding: '40px 20px' }}>
-              <h3>Search for an npm package to get started</h3>
-              <p>Enter a package name above to visualize its dependency tree and security information.</p>
-            </div>
-          )}
-        </LeftPanel>
+      <Container>
+        <Grid columns="1fr 2fr">
+          <Panel height="fit-content">
+            {loading ? (
+              <LoadingSpinner />
+            ) : selectedPackage ? (
+              <PackageInfo package={selectedPackage} dependencyTree={dependencyTree} />
+            ) : (
+              <EmptyState>
+                <div>
+                  <h3>{searchEmptyState.title}</h3>
+                  <p>{searchEmptyState.description}</p>
+                </div>
+              </EmptyState>
+            )}
+          </Panel>
 
-        <RightPanel>
-          {loading ? (
-            <LoadingSpinner />
-          ) : dependencyTree ? (
-            <DependencyTree 
-              data={dependencyTree} 
-              onNodeClick={handlePackageSelect}
-            />
-          ) : (
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              height: '100%',
-              color: '#666',
-              textAlign: 'center'
-            }}>
-              <div>
-                <h3>Dependency Tree Visualization</h3>
-                <p>Select a package to see its interactive dependency tree</p>
-              </div>
-            </div>
-          )}
-        </RightPanel>
-      </MainContent>
+          <Panel minHeight="600px">
+            {loading ? (
+              <LoadingSpinner />
+            ) : dependencyTree ? (
+              <DependencyTree 
+                data={dependencyTree} 
+                onNodeClick={handlePackageSelect}
+              />
+            ) : (
+              <EmptyState>
+                <div>
+                  <h3>{dependenciesEmptyState.title}</h3>
+                  <p>{dependenciesEmptyState.description}</p>
+                </div>
+              </EmptyState>
+            )}
+          </Panel>
+        </Grid>
+      </Container>
     </AppContainer>
   );
 }
