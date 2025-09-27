@@ -62,7 +62,7 @@ describe('Integration Tests', () => {
 
       // Test dependency tree endpoint
       const treeResponse = await request(app)
-        .get('/api/dependencies/lodash?depth=1')
+        .get('/api/tree/lodash?depth=1')
         .expect(200);
 
       expect(treeResponse.body).toMatchObject({
@@ -122,7 +122,7 @@ describe('Integration Tests', () => {
         .mockResolvedValueOnce({ data: mockAcceptsData });
 
       const response = await request(app)
-        .get('/api/dependencies/express?depth=2')
+        .get('/api/tree/express?depth=2')
         .expect(200);
 
       expect(response.body.name).toBe('express');

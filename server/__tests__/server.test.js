@@ -172,7 +172,7 @@ describe('NPM Package Visualizer API', () => {
     });
   });
 
-  describe('GET /api/dependencies/:name', () => {
+  describe('GET /api/tree/:name', () => {
     test('should return dependency tree', async () => {
       const mockPackageData = {
         name: 'test-package',
@@ -222,7 +222,7 @@ describe('NPM Package Visualizer API', () => {
       mockSecurityService.getSecurityScore.mockReturnValue(100);
 
       const response = await request(app)
-        .get('/api/dependencies/test-package')
+        .get('/api/tree/test-package')
         .expect(200);
 
       expect(response.body).toMatchObject({
@@ -264,7 +264,7 @@ describe('NPM Package Visualizer API', () => {
       mockSecurityService.getSecurityScore.mockReturnValue(100);
 
       const response = await request(app)
-        .get('/api/dependencies/test-package?depth=1')
+        .get('/api/tree/test-package?depth=1')
         .expect(200);
 
       expect(response.body.depth).toBe(0);
@@ -274,8 +274,8 @@ describe('NPM Package Visualizer API', () => {
       mockedAxios.get.mockRejectedValueOnce(new Error('Package not found'));
 
       const response = await request(app)
-        .get('/api/dependencies/nonexistent-package')
-        .expect(200);
+        .get('/api/tree/nonexistent-package')
+        .expect(500);
 
       expect(response.body).toMatchObject({
         name: 'nonexistent-package'
