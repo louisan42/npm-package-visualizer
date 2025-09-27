@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react';
 
@@ -82,13 +82,7 @@ function CompatibilityMatrix({ packageData, dependencyTree }) {
   const [compatibilityData, setCompatibilityData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (packageData && dependencyTree) {
-      analyzeCompatibility();
-    }
-  }, [packageData, dependencyTree]);
-
-  const analyzeCompatibility = async () => {
+  const analyzeCompatibility = useCallback(async () => {
     setLoading(true);
     
     try {
@@ -117,7 +111,13 @@ function CompatibilityMatrix({ packageData, dependencyTree }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [packageData, dependencyTree]);
+
+  useEffect(() => {
+    if (packageData && dependencyTree) {
+      analyzeCompatibility();
+    }
+  }, [packageData, dependencyTree, analyzeCompatibility]);
 
   const findDependencyInTree = (tree, depName) => {
     if (tree.name === depName) return tree;
