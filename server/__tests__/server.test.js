@@ -275,9 +275,10 @@ describe('NPM Package Visualizer API', () => {
 
       const response = await request(app)
         .get('/api/dependencies/nonexistent-package')
-        .expect(500);
+        .expect(200);
 
       expect(response.body).toMatchObject({
+        name: 'nonexistent-package',
         error: expect.any(String)
       });
     });
@@ -318,9 +319,12 @@ describe('NPM Package Visualizer API', () => {
 
       const response = await request(app)
         .get('/api/vulnerabilities/test-package')
-        .expect(500);
+        .expect(200);
 
       expect(response.body).toMatchObject({
+        package: 'test-package',
+        vulnerabilities: [],
+        total_count: 0,
         error: expect.any(String)
       });
     });

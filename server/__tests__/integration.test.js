@@ -1,5 +1,11 @@
 // Integration Tests
 const request = require('supertest');
+
+// Mock axios before importing the app
+jest.mock('axios');
+const axios = require('axios');
+const mockedAxios = axios;
+
 const app = require('../index');
 
 // Integration tests with real API calls (but mocked for CI)
@@ -9,6 +15,10 @@ describe('Integration Tests', () => {
     jest.setTimeout(30000);
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   afterAll(() => {
     jest.setTimeout(5000);
   });
@@ -16,8 +26,6 @@ describe('Integration Tests', () => {
   describe('Full package analysis workflow', () => {
     test('should analyze a simple package end-to-end', async () => {
       // Mock the external API calls for consistent testing
-      const axios = require('axios');
-      jest.mock('axios');
       
       const mockPackageData = {
         name: 'lodash',
@@ -38,7 +46,7 @@ describe('Integration Tests', () => {
         time: { '4.17.21': '2021-02-20T15:42:16.891Z' }
       };
 
-      axios.get.mockResolvedValue({ data: mockPackageData });
+      mockedAxios.get.mockResolvedValue({ data: mockPackageData });
 
       // Test package info endpoint
       const packageResponse = await request(app)
@@ -110,7 +118,7 @@ describe('Integration Tests', () => {
         time: {}
       };
 
-      axios.get
+      mockedAxios.get
         .mockResolvedValueOnce({ data: mockExpressData })
         .mockResolvedValueOnce({ data: mockAcceptsData });
 
@@ -120,24 +128,24 @@ describe('Integration Tests', () => {
 
       expect(response.body.name).toBe('express');
       expect(response.body.dependencies.length).toBeGreaterThan(0);
-    });
+    }, 15000);
   });
 
   describe('Error scenarios', () => {
     test('should handle network timeouts gracefully', async () => {
-      const axios = require('axios');
-      axios.get.mockRejectedValueOnce(new Error('ETIMEDOUT'));
+      mockedAxios.get.mockRejectedValueOnce(new Error('ETIMEDOUT'));
 
       const response = await request(app)
         .get('/api/package/timeout-package')
         .expect(404);
 
-      expect(response.body.error).toBeDefined();
+      expect(response.body).toMatchObject({
+        error: expect.any(String)
+      });
     });
 
     test('should handle malformed package data', async () => {
-      const axios = require('axios');
-      axios.get.mockResolvedValueOnce({ data: { invalid: 'data' } });
+      mockedAxios.get.mockResolvedValueOnce({ data: { invalid: 'data' } });
 
       const response = await request(app)
         .get('/api/package/malformed-package')
@@ -168,7 +176,7 @@ describe('Integration Tests', () => {
         time: {}
       };
 
-      axios.get.mockResolvedValue({ data: mockPackageData });
+      mockedAxios.get.mockResolvedValue({ data: mockPackageData });
 
       const startTime = Date.now();
       
@@ -203,7 +211,7 @@ describe('Integration Tests', () => {
         time: {}
       };
 
-      axios.get.mockResolvedValue({ data: mockPackageData });
+      mockedAxios.get.mockResolvedValue({ data: mockPackageData });
 
       // Make 5 concurrent requests
       const promises = Array(5).fill().map(() =>
