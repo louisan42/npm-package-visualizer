@@ -146,15 +146,16 @@ The CI pipeline includes:
 1. **Test Matrix**: Node.js 18.x and 20.x
 2. **Linting**: ESLint checks
 3. **Testing**: Full test suite with coverage
-4. **SonarQube**: Code quality analysis
+4. **SonarQube**: Code quality analysis with native coverage integration
 5. **Security**: npm audit and Snyk scanning
 
 ### SonarQube Configuration
 
 - **Project Key**: `npm-package-visualizer`
-- **Coverage Reports**: LCOV format
+- **Coverage Reports**: Native LCOV integration (no external services needed)
 - **Quality Gate**: Enforced quality standards
 - **Security Hotspots**: Automated security analysis
+- **Coverage Paths**: `coverage/lcov.info` (server) and `client/coverage/lcov.info` (client)
 
 ## Writing Tests
 
