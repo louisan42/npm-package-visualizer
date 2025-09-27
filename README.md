@@ -154,7 +154,7 @@ MIT License - see LICENSE file for details
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/your-repo/issues) page
+1. Check the [Issues](https://github.com/louisan42/npm-package-visualizer/issues) page
 2. Create a new issue with detailed information
 3. Provide steps to reproduce any bugs
 

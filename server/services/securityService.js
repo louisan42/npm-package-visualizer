@@ -55,7 +55,6 @@ class SecurityService {
             published_at: advisory.published_at,
             updated_at: advisory.updated_at,
             references: advisory.references?.map(ref => ref.url) || [],
-            source: 'github'
           });
         }
       }
@@ -64,6 +63,7 @@ class SecurityService {
       return vulnerabilities;
 
     } catch (error) {
+      // Log error and return empty array for graceful degradation
       console.error(`Error fetching GitHub advisories for ${packageName}:`, error.message);
       return [];
     }
