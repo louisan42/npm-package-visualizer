@@ -44,7 +44,7 @@ jobs:
         npm test -- --coverage --watchAll=false
     
     - name: Archive coverage reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-reports-${{ matrix.node-version }}
         path: |
@@ -79,7 +79,7 @@ jobs:
         cd client && npm test -- --coverage --watchAll=false
     
     - name: Download coverage reports
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: coverage-reports-20.x
         path: ./
@@ -158,16 +158,6 @@ jobs:
     - name: Build client
       run: npm run build
     
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-files
-        path: |
-          client/build/
-          server/
-          package.json
-          package-lock.json
-    
     - name: Test server startup
       run: |
         timeout 10s npm run server || code=$?
@@ -176,41 +166,3 @@ jobs:
           exit 1
         fi
         echo "Server started successfully"
-
-  deploy-staging:
-    name: Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
-    
-    steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: build-files
-    
-    - name: Deploy to staging
-      run: |
-        echo "Deploying to staging environment..."
-        # Add your staging deployment commands here
-        # e.g., deploy to Heroku, AWS, etc.
-
-  deploy-production:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    
-    steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: build-files
-    
-    - name: Deploy to production
-      run: |
-        echo "Deploying to production environment..."
-        # Add your production deployment commands here
-        # e.g., deploy to Netlify, Vercel, AWS, etc.
