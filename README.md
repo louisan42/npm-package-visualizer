@@ -1,12 +1,16 @@
-# 📦 NPM Package Visualizer
+# 🔍 NPM Package Visualizer
 
-An interactive web application that visualizes npm package dependency trees, shows security vulnerabilities, and provides compatibility information.
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![CI/CD Pipeline](https://github.com/louisan42/npm-package-visualizer/actions/workflows/ci.yml/badge.svg)](https://github.com/louisan42/npm-package-visualizer/actions)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](CONTRIBUTING.md)
+
+Interactive dependency tree visualization tool with security analysis for npm packages.
 
 ## Features
 
 - 🔍 **Smart Package Search**: Search and discover npm packages with autocomplete
 - 🌳 **Interactive Dependency Tree**: Visualize package dependencies with D3.js
-- 🛡️ **Security Analysis**: CVE vulnerability warnings and security information
 - 📊 **Compatibility Matrix**: Version compatibility checking
 - 📱 **Responsive Design**: Works on desktop and mobile devices
 - ⚡ **Fast Performance**: Caching and optimized API calls
@@ -150,6 +154,20 @@ MIT License - see LICENSE file for details
 - [ ] Docker containerization
 - [ ] Performance optimizations and caching improvements
 
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes and add tests
+4. Run tests: `npm test`
+5. Commit your changes: `git commit -m 'feat: add amazing feature'`
+6. Push to the branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
+
 ## Support
 
 If you encounter any issues or have questions:
@@ -157,6 +175,10 @@ If you encounter any issues or have questions:
 1. Check the [Issues](https://github.com/louisan42/npm-package-visualizer/issues) page
 2. Create a new issue with detailed information
 3. Provide steps to reproduce any bugs
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
