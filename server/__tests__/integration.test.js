@@ -75,7 +75,6 @@ describe('Integration Tests', () => {
     });
 
     test('should handle package with dependencies', async () => {
-      const axios = require('axios');
       
       const mockExpressData = {
         name: 'express',
@@ -157,7 +156,6 @@ describe('Integration Tests', () => {
 
   describe('Performance tests', () => {
     test('should respond within reasonable time limits', async () => {
-      const axios = require('axios');
       
       const mockPackageData = {
         name: 'test-package',
@@ -192,7 +190,6 @@ describe('Integration Tests', () => {
     });
 
     test('should handle concurrent requests', async () => {
-      const axios = require('axios');
       
       const mockPackageData = {
         name: 'concurrent-test',
