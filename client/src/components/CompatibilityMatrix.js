@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react';
+import { findDependencyInTree, checkVersionSatisfies } from '../utils/helpers';
 
 const MatrixContainer = styled.div`
   margin-top: 20px;
@@ -82,6 +83,20 @@ function CompatibilityMatrix({ packageData, dependencyTree }) {
   const [compatibilityData, setCompatibilityData] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Simple compatibility analysis function
+  const analyzeDependencyCompatibility = useCallback((depName, requiredVersion, installedVersion) => {
+    const isCompatible = checkVersionSatisfies(installedVersion, requiredVersion);
+    return {
+      name: depName,
+      required: requiredVersion,
+      installed: installedVersion,
+      status: isCompatible ? 'compatible' : 'incompatible',
+      message: isCompatible 
+        ? `Version ${installedVersion} satisfies ${requiredVersion}`
+        : `Version ${installedVersion} does not satisfy ${requiredVersion}`
+    };
+  }, []);
+
   const analyzeCompatibility = useCallback(async () => {
     setLoading(true);
     
@@ -96,7 +111,7 @@ function CompatibilityMatrix({ packageData, dependencyTree }) {
         const depNode = findDependencyInTree(dependencyTree, depName);
         
         if (depNode) {
-          const analysis = await analyzeDependencyCompatibility(
+          const analysis = analyzeDependencyCompatibility(
             depName, 
             requiredVersion, 
             depNode.version
@@ -111,87 +126,13 @@ function CompatibilityMatrix({ packageData, dependencyTree }) {
     } finally {
       setLoading(false);
     }
-  }, [packageData, dependencyTree]);
+  }, [packageData, dependencyTree, analyzeDependencyCompatibility]);
 
   useEffect(() => {
     if (packageData && dependencyTree) {
       analyzeCompatibility();
     }
   }, [packageData, dependencyTree, analyzeCompatibility]);
-
-  const findDependencyInTree = (tree, depName) => {
-    if (tree.name === depName) return tree;
-    
-    for (const dep of tree.dependencies || []) {
-      const found = findDependencyInTree(dep, depName);
-      if (found) return found;
-    }
-    
-    return null;
-  };
-
-  const analyzeDependencyCompatibility = async (name, required, installed) => {
-    try {
-      // Fetch latest version info
-      const response = await fetch(`/api/package/${name}`);
-      const packageInfo = await response.json();
-      
-      const latest = packageInfo.version;
-      const isLatest = installed === latest;
-      const satisfiesRequired = checkVersionSatisfies(installed, required);
-      
-      let status = 'compatible';
-      let message = 'Compatible';
-      
-      if (!satisfiesRequired) {
-        status = 'incompatible';
-        message = 'Version mismatch';
-      } else if (!isLatest) {
-        status = 'warning';
-        message = 'Outdated version';
-      }
-      
-      return {
-        name,
-        required,
-        installed,
-        latest,
-        status,
-        message,
-        isLatest,
-        satisfiesRequired
-      };
-    } catch (error) {
-      return {
-        name,
-        required,
-        installed,
-        latest: 'unknown',
-        status: 'unknown',
-        message: 'Unable to check',
-        isLatest: false,
-        satisfiesRequired: false
-      };
-    }
-  };
-
-  const checkVersionSatisfies = (installed, required) => {
-    try {
-      // Simple version satisfaction check
-      // In a real implementation, you'd use semver.satisfies
-      if (required.startsWith('^')) {
-        const baseVersion = required.slice(1);
-        return installed >= baseVersion;
-      }
-      if (required.startsWith('~')) {
-        const baseVersion = required.slice(1);
-        return installed.startsWith(baseVersion.split('.')[0]);
-      }
-      return installed === required;
-    } catch (error) {
-      return false;
-    }
-  };
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -226,7 +167,7 @@ function CompatibilityMatrix({ packageData, dependencyTree }) {
               <DependencyInfo>
                 <DependencyName>{item.name}</DependencyName>
                 <VersionInfo>
-                  Required: {item.required} | Installed: {item.installed} | Latest: {item.latest}
+                  Required: {item.required} | Installed: {item.installed}
                 </VersionInfo>
               </DependencyInfo>
               <StatusIcon status={item.status}>
