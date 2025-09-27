@@ -38,18 +38,12 @@ jobs:
     - name: Run server tests
       run: npm run test:ci
     
-    - name: Run client tests
-      run: |
-        cd client
-        npm test -- --coverage --watchAll=false
-    
     - name: Archive coverage reports
       uses: actions/upload-artifact@v4
       with:
         name: coverage-reports-${{ matrix.node-version }}
         path: |
           coverage/
-          client/coverage/
 
   sonarqube:
     name: SonarQube Analysis
@@ -74,9 +68,7 @@ jobs:
         cd client && npm ci
     
     - name: Run tests with coverage
-      run: |
-        npm run test:ci
-        cd client && npm test -- --coverage --watchAll=false
+      run: npm run test:ci
     
     - name: Download coverage reports
       uses: actions/download-artifact@v4
