@@ -132,12 +132,14 @@ describe('Integration Tests', () => {
 
   describe('Error scenarios', () => {
     test('should handle network timeouts gracefully', async () => {
+      // Mock axios to reject with timeout error
       mockedAxios.get.mockRejectedValueOnce(new Error('ETIMEDOUT'));
 
       const response = await request(app)
-        .get('/api/package/timeout-package')
-        .expect(404);
+        .get('/api/package/timeout-package');
 
+      // Should return 404 with error message
+      expect(response.status).toBe(404);
       expect(response.body).toMatchObject({
         error: expect.any(String)
       });
@@ -156,7 +158,6 @@ describe('Integration Tests', () => {
 
   describe('Performance tests', () => {
     test('should respond within reasonable time limits', async () => {
-      
       const mockPackageData = {
         name: 'test-package',
         versions: {
@@ -174,23 +175,25 @@ describe('Integration Tests', () => {
         time: {}
       };
 
-      mockedAxios.get.mockResolvedValue({ data: mockPackageData });
+      // Clear any previous mocks and set up fresh mock
+      mockedAxios.get.mockClear();
+      mockedAxios.get.mockResolvedValueOnce({ data: mockPackageData });
 
       const startTime = Date.now();
       
-      await request(app)
-        .get('/api/package/test-package')
-        .expect(200);
+      const response = await request(app)
+        .get('/api/package/test-package');
 
       const endTime = Date.now();
       const responseTime = endTime - startTime;
 
-      // Should respond within 5 seconds
+      // Should return 200 and respond within 5 seconds
+      expect(response.status).toBe(200);
+      expect(response.body.name).toBe('test-package');
       expect(responseTime).toBeLessThan(5000);
     });
 
     test('should handle concurrent requests', async () => {
-      
       const mockPackageData = {
         name: 'concurrent-test',
         versions: {
@@ -208,6 +211,8 @@ describe('Integration Tests', () => {
         time: {}
       };
 
+      // Clear previous mocks and set up persistent mock for multiple calls
+      mockedAxios.get.mockClear();
       mockedAxios.get.mockResolvedValue({ data: mockPackageData });
 
       // Make 5 concurrent requests

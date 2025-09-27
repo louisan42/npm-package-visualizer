@@ -84,6 +84,14 @@ jobs:
         name: coverage-reports-20.x
         path: ./
     
+    - name: Verify coverage files exist
+      run: |
+        echo "Checking for coverage files..."
+        ls -la coverage/ || echo "Server coverage directory not found"
+        ls -la client/coverage/ || echo "Client coverage directory not found"
+        test -f coverage/lcov.info && echo "✅ Server LCOV found" || echo "❌ Server LCOV missing"
+        test -f client/coverage/lcov.info && echo "✅ Client LCOV found" || echo "❌ Client LCOV missing"
+    
     - name: SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@v6
       env:
